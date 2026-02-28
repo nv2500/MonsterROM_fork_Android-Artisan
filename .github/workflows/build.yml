@@ -90,4 +90,5 @@ jobs:
         with:
           name: MonsterROM-${{ matrix.target }}
           path: |
-            out/*.zip*
+            out/*.zip
+            *.zip
