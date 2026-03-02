@@ -181,7 +181,7 @@ for i in "${FIRMWARES[@]}"; do
             if [ "$MODEL" == "SM-S942B" ]; then
                 STR=" -v S942BXXU1AZAQ/S942BOXM1AZAQ/S942BXXU1AZAQ/S942BXXU1AZAQ"
             elif [ "$MODEL" == "SM-G990E" ]; then
-                STR=" -v G990EXXSIGYI3/G990EOLMIGYI3/G990EXXSIGYI3/G990EXXSIGYI3"
+                STR=" -v G990EXXSIGYI3/G990EOLMIGYI3/G990EXXSIGYI3/G990EOLMIGYI3"
             fi
             
             # Run the downloader
