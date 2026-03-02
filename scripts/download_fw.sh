@@ -173,10 +173,19 @@ for i in "${FIRMWARES[@]}"; do
         # Anan's samloader stores its logs in the current working directory, let's move into OUT_DIR just for this time
         (
         cd "$OUT_DIR"
+        # STR=""
+        # [ $MODEL == "SM-S942B" ] && STR=" -v S942BXXU1AZAQ/S942BOXM1AZAQ/S942BXXU1AZAQ/S942BXXU1AZAQ"
+        # samloader -m "$MODEL" -r "$CSC" -i "$IMEI" -s "$SERIAL_NO" download$STR -O "$ODIN_DIR/${MODEL}_${CSC}" || exit 1
+        # )
         STR=""
-        [ $MODEL == "SM-S942B" ] && STR=" -v S942BXXU1AZAQ/S942BOXM1AZAQ/S942BXXU1AZAQ/S942BXXU1AZAQ"
+        if [ "$MODEL" == "SM-S942B" ]; then
+            STR=" -v S942BXXU1AZAQ/S942BOXM1AZAQ/S942BXXU1AZAQ/S942BXXU1AZAQ"
+        elif [ "$MODEL" == "SM-G990E" ]; then
+            STR=" -v G990EXXSIGYI3/G990EOLMIGYI3/G990EXXSIGYI3/G990EXXSIGYI3"
+        fi
+        
+        # Run the downloader
         samloader -m "$MODEL" -r "$CSC" -i "$IMEI" -s "$SERIAL_NO" download$STR -O "$ODIN_DIR/${MODEL}_${CSC}" || exit 1
-        )
 
         ZIP_FILE="$(find "$ODIN_DIR/${MODEL}_${CSC}" -name "*.zip" | sort -r | head -n 1)"
         if [ ! "$ZIP_FILE" ] || [ ! -f "$ZIP_FILE" ]; then
@@ -192,47 +201,6 @@ for i in "${FIRMWARES[@]}"; do
             break
         fi
     done
-    # ──────────────────────────────────────────────────────────────────────────
-    # Fetch with samfirm/curl (instead of samloader)
-    # ──────────────────────────────────────────────────────────────────────────
-    # TMP_DL="$(mktemp -d)"
-    # DEST_DIR="$ODIN_DIR/${MODEL}_${CSC}"
-    
-    # echo "- Downloading firmware for $MODEL ($CSC) via curl..."
-    
-    # # ensure clean
-    # rm -rf "$DEST_DIR"
-    # mkdir -p "$DEST_DIR"
-    # rm -rf "$TMP_DL"
-    
-    # # Run samfirm exporter (node + curl internally)
-    # (
-    #   cd "$TMP_DL" || exit 1
-    
-    #   # this should download the AP_*.tar.md5 and related files
-    #   "$PREBUILTS/samfirm/samfirm.js" -m "$MODEL" -r "$CSC" -i "$IMEI"
-    # )
-    
-    # # find the downloaded AP
-    # AP_FILE="$(find "$TMP_DL" -maxdepth 1 -type f -name "AP_*.tar.md5" | head -n1)"
-    
-    # if [[ -z "$AP_FILE" ]]; then
-    #   echo "✖ Download failed — AP file missing"
-    #   exit 1
-    # fi
-    
-    # # validate (using the same util in ProjectAstro)
-    # if ! _VALIDATE_AP_FILE "$AP_FILE"; then
-    #   echo "✖ Validation failed"
-    #   exit 1
-    # fi
-    
-    # echo "- Moving downloaded firmware to $DEST_DIR"
-    # mv "$TMP_DL"/* "$DEST_DIR/" 2>/dev/null
-    
-    # # cleanup
-    # rm -rf "$TMP_DL"
-    # echo "- Download complete!"
 
     LOG "- Extracting $(basename "$ZIP_FILE")..."
     EVAL "unzip -o \"$ZIP_FILE\" -d \"$ODIN_DIR/${MODEL}_${CSC}\" && rm -rf \"$ZIP_FILE\"" || exit 1
