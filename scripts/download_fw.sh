@@ -172,20 +172,21 @@ for i in "${FIRMWARES[@]}"; do
         # shellcheck disable=SC2164
         # Anan's samloader stores its logs in the current working directory, let's move into OUT_DIR just for this time
         (
-        cd "$OUT_DIR"
-        # STR=""
-        # [ $MODEL == "SM-S942B" ] && STR=" -v S942BXXU1AZAQ/S942BOXM1AZAQ/S942BXXU1AZAQ/S942BXXU1AZAQ"
-        # samloader -m "$MODEL" -r "$CSC" -i "$IMEI" -s "$SERIAL_NO" download$STR -O "$ODIN_DIR/${MODEL}_${CSC}" || exit 1
-        # )
-        STR=""
-        if [ "$MODEL" == "SM-S942B" ]; then
-            STR=" -v S942BXXU1AZAQ/S942BOXM1AZAQ/S942BXXU1AZAQ/S942BXXU1AZAQ"
-        elif [ "$MODEL" == "SM-G990E" ]; then
-            STR=" -v G990EXXSIGYI3/G990EOLMIGYI3/G990EXXSIGYI3/G990EXXSIGYI3"
-        fi
-        
-        # Run the downloader
-        samloader -m "$MODEL" -r "$CSC" -i "$IMEI" -s "$SERIAL_NO" download$STR -O "$ODIN_DIR/${MODEL}_${CSC}" || exit 1
+            cd "$OUT_DIR"
+            # STR=""
+            # [ $MODEL == "SM-S942B" ] && STR=" -v S942BXXU1AZAQ/S942BOXM1AZAQ/S942BXXU1AZAQ/S942BXXU1AZAQ"
+            # samloader -m "$MODEL" -r "$CSC" -i "$IMEI" -s "$SERIAL_NO" download$STR -O "$ODIN_DIR/${MODEL}_${CSC}" || exit 1
+            # )
+            STR=""
+            if [ "$MODEL" == "SM-S942B" ]; then
+                STR=" -v S942BXXU1AZAQ/S942BOXM1AZAQ/S942BXXU1AZAQ/S942BXXU1AZAQ"
+            elif [ "$MODEL" == "SM-G990E" ]; then
+                STR=" -v G990EXXSIGYI3/G990EOLMIGYI3/G990EXXSIGYI3/G990EXXSIGYI3"
+            fi
+            
+            # Run the downloader
+            samloader -m "$MODEL" -r "$CSC" -i "$IMEI" -s "$SERIAL_NO" download$STR -O "$ODIN_DIR/${MODEL}_${CSC}" || exit 1
+        )
 
         ZIP_FILE="$(find "$ODIN_DIR/${MODEL}_${CSC}" -name "*.zip" | sort -r | head -n 1)"
         if [ ! "$ZIP_FILE" ] || [ ! -f "$ZIP_FILE" ]; then
