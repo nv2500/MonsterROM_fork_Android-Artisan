@@ -2,6 +2,10 @@ name: Build MonsterROM
 
 on:
   workflow_dispatch:
+    inputs:
+      samfw_link:
+        description: 'Enter the Direct Download Link from Samfw.com:'
+        required: true
 
 jobs:
   build:
@@ -60,25 +64,22 @@ jobs:
           source ./buildenv.sh ${{ matrix.target }}
           ./scripts/build_dependencies.sh
 
-      - name: Download source firmware
+      - name: Download firmwares
         run: |
           source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/download_fw.sh --force --ignore-target
+          
+          mkdir -p out/odin/SM-G990E_XXV
+          curl -L -o out/odin/SM-G990E_XXV/firmware.zip '${{ github.event.inputs.samfw_link }}'
+          unzip out/odin/SM-G990E_XXV/firmware.zip -d out/odin/SM-G990E_XXV/
+          echo "G990EXXSIGYI3/G990EOLMIGYI3/G990EXXSIGYI1" > out/odin/SM-G990E_XXV/.downloaded
+          rm -rf out/odin/SM-G990E_XXV/firmware.zip
 
-      - name: Extract source firmware
-        run: |
-          source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/extract_fw.sh --force --ignore-target
+          ./scripts/download_fw.sh
 
-      - name: Download target firmware
+      - name: Extract stock firmwares
         run: |
           source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/download_fw.sh --force --ignore-source
-
-      - name: Extract target firmware
-        run: |
-          source ./buildenv.sh ${{ matrix.target }}
-          ./scripts/extract_fw.sh --force --ignore-source
+          ./scripts/extract_fw.sh
 
       - name: Build ROM
         run: |
