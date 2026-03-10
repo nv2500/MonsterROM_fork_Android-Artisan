@@ -63,7 +63,7 @@ system/preload
 truncate -s 0 "$WORK_DIR/system/system/etc/vpl_apks_count_list.txt"
 
 # eSIM
-[[ "$TARGET_COMMON_SUPPORT_EMBEDDED_SIM" == "false" ]] && SYSTEM_DEBLOAT+="
+SYSTEM_DEBLOAT+="
 system/etc/permissions/privapp-permissions-com.samsung.android.app.esimkeystring.xml
 system/etc/permissions/privapp-permissions-com.samsung.euicc.xml
 system/etc/sysconfig/preinstalled-packages-com.samsung.android.app.esimkeystring.xml
